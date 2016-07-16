@@ -63,5 +63,6 @@ EXPOSE 9000 50090 36788 50070 22 8030 8031 8032 8033 8088 33531
 
 VOLUME /data
 VOLUME /config
+VOLUME /deployments
 
 ENTRYPOINT [ "sh", "-c", "mkdir -p /data/hdfs/namenode; mkdir -p /data/hdfs/datanode; mkdir -p /data/logs/hadoop; service ssh start; bash"]
