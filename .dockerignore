@@ -1,0 +1,4 @@
+.dockerignore
+.git
+.gitignore
+build-docker-image.sh
