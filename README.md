@@ -27,6 +27,9 @@ and one slave node.
 by adding more slave node configuration.
 3. Launch the new cluster: `docker-compose up -d`
 
+You can log into the *namenode* (master) by issuing `docker exec -it hadoop-master bash`
+and to the *datanode* (slave) by `docker exec -it hadoop-slave1 bash`.
+
 ### Setting up a standalone Hadoop cluster
 
 #### Namenode setup
@@ -60,6 +63,9 @@ its state so MapReduce jobs can be ran through YARN afterwards.
 1. Start Hadoop: `~/utils/start-hadoop.sh`
 2. Stop Hadoop: `~/utils/stop-hadoop.sh`
 3. Start Hadoop again: `~/utils/start-hadoop.sh`
+
+Restarting HDFS has to be done **every time** it is stopped, otherwise the first
+MapReduce job will always fail and the cluster will terminate.
 
 Interacting with HDFS
 ---------------------
