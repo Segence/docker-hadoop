@@ -61,8 +61,41 @@ its state so MapReduce jobs can be ran through YARN afterwards.
 2. Stop Hadoop: `~/utils/stop-hadoop.sh`
 3. Start Hadoop again: `~/utils/start-hadoop.sh`
 
-Running the word count example
+Interacting with HDFS
+---------------------
+
+### Local access
+
+When you're on the namenode, simply use the `hadoop dfs ...` command to interact with
+the HDFS cluster.
+E.g. listing the contens of the root of the cluster: `hdfs dfs -ls /`
+
+### Remote access
+
+1. Make sure you've got the same version of Hadoop downloaded and extracted on your local system
+2. Go into your Hadoop installation directory, and then into the `bin` directory.
+3. For example to list the contents of your HDFS cluster, use: `./hdfs dfs -ls hdfs://localhost:9000/`
+
+Web interfaces
+--------------
+
+The main web interfaces are:
+
+- Namenode UI (system info & HDFS browser): http://localhost:50070
+- WebHDFS REST API: http://localhost:50070/webhdfs/v1
+- Application Tracker UI (YARN job handling): http://localhost:8088
+
+Change `localhost` to your master node's IP address or host name.
+
+#### WebHDFS REST API
+
+- Getting home directory: http://localhost:50070/webhdfs/v1/?op=GETHOMEDIRECTORY
+- List root of the HDFS volume: http://localhost:50070/webhdfs/v1/?op=LISTSTATUS
+
+Running sample jobs using YARN
 ------------------------------
+
+### Running the word count example
 
 The script will create a directory called *input* with some sample files.
 It'll upload them into the HDFS cluster and run a simple MapReduce job.
@@ -72,16 +105,7 @@ It'll print the results to the console.
 2. Become the *hadoop* user: `su hadoop`
 3. Run `~/utils/run-wordcount.sh`
 
-Web UI
-------
-
-- Namenode UI (system info & HDFS browser): http://[MASTER NODE]:50070
-- Application Tracker UI (YARN job handling): http://[MASTER NODE]:8088
-
-where [MASTER NODE] is the IP address or host name of the Hadoop master.
-
-Running a sample Spark job
---------------------------
+### Running a sample interactive Spark job
 
 Running the word count example leaves some files in HDFS.
 The below example Spark job reads those files and simply splits the file contents by whitespaces. It then prints out the results.

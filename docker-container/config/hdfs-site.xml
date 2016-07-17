@@ -14,4 +14,8 @@
         <name>dfs.replication</name>
         <value>2</value>
     </property>
+    <property>
+        <name>dfs.webhdfs.enabled</name>
+        <value>true</value>
+    </property>
 </configuration>
