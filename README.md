@@ -14,11 +14,18 @@ This Docker container contains a full Hadoop distribution with the following com
 Setting up a new Hadoop cluster
 -------------------------------
 
-For all below steps the Docker image `segence/hadoop:0.1.0` has to be built or
+For all below steps the Docker image `segence/hadoop:0.2.0` has to be built or
 pulled from DockerHub.
 
 - Build the current image locally: `./build-docker-image.sh`
-- Pull from DockerHub: `docker pull segence/hadoop:0.1.0`
+- Pull from DockerHub: `docker pull segence/hadoop:0.2.0`
+
+The default SSH port of the Docker containers is `2222`.
+This is, so in a standalone cluster setup, each data node container can be ran
+on separate physical servers (or virtual appliances). The servers can still use the default
+SSH port `22` but the data nodes, running inside Docker containers will be using port `2222`.
+This port is automatically exposed. It's import to note that all exposed ports have
+to be open on the firewall of the servers.
 
 ### Setting up a local Hadoop cluster
 

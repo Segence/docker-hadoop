@@ -43,6 +43,7 @@ ENV PATH=$PATH:$JAVA_HOME/bin:/usr/local/hadoop/bin:/usr/local/hadoop/sbin:$SCAL
 RUN echo "PATH=$PATH:$JAVA_HOME/bin:/usr/local/hadoop/bin:/usr/local/hadoop/sbin:$SCALA_HOME/bin:$SPARK_HOME/bin" >> /home/hadoop/.bashrc
 
 # Hadoop configuration
+COPY config/sshd_config /etc/ssh/sshd_config
 COPY config/ssh_config /home/hadoop/.ssh/config
 COPY config/hadoop-env.sh config/hdfs-site.xml config/hdfs-site.xml config/core-site.xml \
      config/core-site.xml config/mapred-site.xml config/yarn-site.xml config/yarn-site.xml \
@@ -59,7 +60,7 @@ RUN chown -R hadoop:hadoop /home/hadoop
 # Cleanup
 RUN rm -rf /tmp/*
 
-EXPOSE 9000 50090 36788 50070 22 8030 8031 8032 8033 8088 33531
+EXPOSE 9000 50090 36788 50070 2222 8030 8031 8032 8033 8088 33531
 
 VOLUME /data
 VOLUME /config

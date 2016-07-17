@@ -1,7 +1,7 @@
 version: '2'
 services:
   hadoop-slave:
-    image: segence/hadoop:0.1.0
+    image: segence/hadoop:0.2.0
     container_name: hadoop-slave1
     volumes:
       - ./data-slave:/data
