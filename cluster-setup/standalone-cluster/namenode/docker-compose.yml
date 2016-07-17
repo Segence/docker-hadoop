@@ -1,7 +1,7 @@
 version: '2'
 services:
   hadoop-master:
-    image: segence/hadoop:0.2.0
+    image: segence/hadoop:0.2.1
     container_name: hadoop-master
     ports: # HOST:CONTAINER
       - "2222:2222"
