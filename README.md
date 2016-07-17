@@ -17,6 +17,9 @@ Setting up a new Hadoop cluster
 For all below steps the Docker image `segence/hadoop:0.1.0` has to be built or
 pulled from DockerHub.
 
+- Build the current image locally: `./build-docker-image.sh`
+- Pull from DockerHub: `docker pull segence/hadoop:0.1.0`
+
 ### Setting up a local Hadoop cluster
 
 This will set up a local Hadoop cluster using bridged networking with one master
