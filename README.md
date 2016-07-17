@@ -90,16 +90,16 @@ Web interfaces
 
 The main web interfaces are:
 
-- Namenode UI (system info & HDFS browser): http://localhost:50070
-- WebHDFS REST API: http://localhost:50070/webhdfs/v1
-- Application Tracker UI (YARN job handling): http://localhost:8088
+- Namenode UI (system info & HDFS browser): [http://localhost:50070](http://localhost:50070)
+- WebHDFS REST API: [http://localhost:50070/webhdfs/v1](http://localhost:50070/webhdfs/v1)
+- Application Tracker UI (YARN job handling): [http://localhost:8088](http://localhost:8088)
 
 Change `localhost` to your master node's IP address or host name.
 
 #### WebHDFS REST API
 
-- Getting home directory: http://localhost:50070/webhdfs/v1/?op=GETHOMEDIRECTORY
-- List root of the HDFS volume: http://localhost:50070/webhdfs/v1/?op=LISTSTATUS
+- Getting home directory: [http://localhost:50070/webhdfs/v1/?op=GETHOMEDIRECTORY](http://localhost:50070/webhdfs/v1/?op=GETHOMEDIRECTORY)
+- List root of the HDFS volume: [http://localhost:50070/webhdfs/v1/?op=LISTSTATUS](http://localhost:50070/webhdfs/v1/?op=LISTSTATUS)
 
 Running sample jobs using YARN
 ------------------------------
