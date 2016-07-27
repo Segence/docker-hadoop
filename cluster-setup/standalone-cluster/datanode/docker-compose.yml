@@ -1,9 +1,0 @@
-version: '2'
-services:
-  hadoop-slave:
-    image: segence/hadoop:0.2.1
-    container_name: hadoop-slave1
-    volumes:
-      - ./data-slave:/data
-      - ./slaves-config:/config:ro
-    tty: true

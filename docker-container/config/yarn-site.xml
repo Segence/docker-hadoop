@@ -10,11 +10,11 @@
     </property>
     <property>
         <name>yarn.resourcemanager.hostname</name>
-        <value>hadoop-master</value>
+        <value>HADOOP_NAMENODE_HOST</value>
     </property>
     <property>
         <name>yarn.nodemanager.hostname</name>
-        <value>hadoop-master</value>
+        <value>HADOOP_NAMENODE_HOST</value>
     </property>
     <property>
         <name>yarn.nodemanager.webapp.address</name>
