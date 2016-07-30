@@ -62,13 +62,17 @@ Turn on packet forwading (RHEL 7): `/sbin/sysctl -w net.ipv4.ip_forward=1`
 
 [More info](https://www.centos.org/docs/5/html/Virtual_Server_Administration/s1-lvs-forwarding-VSA.html)
 
+You can use the script `cluster-setup/standalone-cluster/setup-rhel.sh` to achieve
+the above, as well as to create the required directories and change their ownership
+(as in point 1 and 2 below, so you can skip them if you used the RHEL setup script).
+
 #### Namenode setup
 
 1. Create the following directories on the host:
   - Directory for the HDFS data: `/hadoop/data`
   - Directory for MapReduce/Spark deployments: `/hadoop/deployments`
-2. Create the file `/hadoop/slaves-config/slaves` listing all slave node host name on a separate line
-3. Make the `hadoop` user own the directories: `chown -R hadoop:hadoop /hadoop`
+2. Make the `hadoop` user own the directories: `chown -R hadoop:hadoop /hadoop`
+3. Create the file `/hadoop/slaves-config/slaves` listing all slave node host names on a separate line
 4. Copy the `start-namenode.sh` file onto the system (e.g. into `/hadoop/start-namenode.sh`)
 5. Launch the new *namenode*:
 `/hadoop/start-namenode.sh <HOST NAME> [DNS SEARCH DOMAIN] [DNS SERVER HOST]`,
@@ -77,8 +81,8 @@ where *HOST NAME* is the host name of the *namenode*.
 #### Datanode setup
 
 1. Create the directory for the HDFS data: `/hadoop/data`
-2. Create the file `/hadoop/slaves-config/slaves` listing all slave node host name on a separate line
-3. Make the `hadoop` user own the directories: `chown -R hadoop:hadoop /hadoop`
+2. Make the `hadoop` user own the directories: `chown -R hadoop:hadoop /hadoop`
+3. Create the file `/hadoop/slaves-config/slaves` listing all slave node host names on a separate line
 4. Copy the `start-datanode.sh` file onto the system (e.g. into `/hadoop/start-datanode.sh`)
 5. Launch the new *datanode* with its ID:
 `/hadoop/start-datanode.sh <HOST NAME> <NAMENODE HOST NAME> [DNS SEARCH DOMAIN] [DNS SERVER HOST]`,
