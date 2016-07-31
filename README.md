@@ -58,7 +58,9 @@ Create the `hadoop` user on the host system, e.g. `useradd hadoop`
 
 *RHEL/CentOS note*
 
-Turn on packet forwading (RHEL 7): `/sbin/sysctl -w net.ipv4.ip_forward=1`
+If you encounter the following error message when running a Docker container:
+`WARNING: IPv4 forwarding is disabled. Networking will not work.`
+then turn on packet forwading (RHEL 7): `/sbin/sysctl -w net.ipv4.ip_forward=1`
 
 [More info](https://www.centos.org/docs/5/html/Virtual_Server_Administration/s1-lvs-forwarding-VSA.html)
 
