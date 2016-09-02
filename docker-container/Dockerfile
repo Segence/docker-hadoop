@@ -31,10 +31,12 @@ RUN chown -R root:root /usr/local/scala
 ENV SCALA_HOME=/usr/local/scala
 
 # Installing Spark
-RUN wget http://d3kbcqa49mib13.cloudfront.net/spark-1.6.2-bin-without-hadoop.tgz
-RUN tar -xzvf spark-1.6.2-bin-without-hadoop.tgz -C /usr/local/
-RUN mv /usr/local/spark-1.6.2-bin-without-hadoop /usr/local/spark
+RUN wget http://d3kbcqa49mib13.cloudfront.net/spark-2.0.0-bin-without-hadoop.tgz
+RUN tar -xzvf spark-2.0.0-bin-without-hadoop.tgz -C /usr/local/
+RUN mv /usr/local/spark-2.0.0-bin-without-hadoop /usr/local/spark
 ENV SPARK_HOME=/usr/local/spark
+ENV LD_LIBRARY_PATH=$HADOOP_HOME/lib/native/:$LD_LIBRARY_PATH
+
 # Configuring Hadoop classpath for Spark
 RUN echo "export SPARK_DIST_CLASSPATH=$($HADOOP_HOME/bin/hadoop classpath)" > /usr/local/spark/conf/spark-env.sh
 
@@ -69,7 +71,7 @@ RUN rm -rf /tmp/*
 
 WORKDIR /root
 
-EXPOSE  2222 8030 8031 8032 8033 8088 9000 50010 50070 50090
+EXPOSE  2222 4040 8030 8031 8032 8033 8088 9000 50010 50070 50090
 
 VOLUME /data
 VOLUME /config

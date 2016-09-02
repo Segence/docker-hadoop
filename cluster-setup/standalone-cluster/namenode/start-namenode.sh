@@ -44,6 +44,7 @@ $DOCKER_DNS_SERVER \
 $DOCKER_DNS_SEARCH \
 -e HADOOP_NAMENODE_HOST=$HOSTNAME \
 -p 2222:2222 \
+-p 4040:4040 \
 -p 8030:8030 \
 -p 8031:8031 \
 -p 8032:8032 \
@@ -56,4 +57,4 @@ $DOCKER_DNS_SEARCH \
 -v /hadoop/data:/data \
 -v /hadoop/slaves-config:/config:ro \
 -v /hadoop/deployments:/deployments:ro \
-segence/hadoop:0.2.2
+segence/hadoop:0.3.0

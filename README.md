@@ -9,16 +9,16 @@ This Docker container contains a full Hadoop distribution with the following com
 - Hadoop 2.7.2 (including YARN)
 - Oracle JDK 8
 - Scala 2.11.8
-- Spark 1.6.2
+- Spark 2.0.0
 
 Setting up a new Hadoop cluster
 -------------------------------
 
-For all below steps the Docker image `segence/hadoop:0.2.2` has to be built or
+For all below steps the Docker image `segence/hadoop:0.3.0` has to be built or
 pulled from DockerHub.
 
 - Build the current image locally: `./build-docker-image.sh`
-- Pull from DockerHub: `docker pull segence/hadoop:0.2.2`
+- Pull from DockerHub: `docker pull segence/hadoop:0.3.0`
 
 The default SSH port of the Docker containers is `2222`.
 This is, so in a standalone cluster setup, each *namenode* and *datanode* containers
