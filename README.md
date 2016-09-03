@@ -14,11 +14,11 @@ This Docker container contains a full Hadoop distribution with the following com
 Setting up a new Hadoop cluster
 -------------------------------
 
-For all below steps the Docker image `segence/hadoop:0.3.0` has to be built or
+For all below steps the Docker image `segence/hadoop:0.3.1` has to be built or
 pulled from DockerHub.
 
 - Build the current image locally: `./build-docker-image.sh`
-- Pull from DockerHub: `docker pull segence/hadoop:0.3.0`
+- Pull from DockerHub: `docker pull segence/hadoop:0.3.1`
 
 The default SSH port of the Docker containers is `2222`.
 This is, so in a standalone cluster setup, each *namenode* and *datanode* containers
@@ -49,6 +49,10 @@ other than the default one slave node. If you add more slaves then also edit the
 
 You can log into the *namenode* (master) by issuing `docker exec -it hadoop-master bash`
 and to the *datanode* (slave) by `docker exec -it hadoop-slave1 bash`.
+
+For a single datanode cluster, replication has to be set to 1, otherwise clients
+won't be able to copy files into HDFS. To change the default replication (2) simply
+change the `dfs.replication` entry to 1 in the `$HADOOP_CONF_DIR/hdfs-site.xml` file.
 
 ### Setting up a standalone Hadoop cluster
 

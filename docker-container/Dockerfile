@@ -4,7 +4,7 @@ MAINTAINER Segence <segence@segence.com>
 
 WORKDIR /tmp
 
-RUN apt-get update && apt-get install -y openssh-server wget vim iputils-ping telnet dnsutils
+RUN apt-get update && apt-get install -y openssh-server wget vim iputils-ping telnet dnsutils bzip2
 
 RUN groupadd hadoop
 RUN useradd -d /home/hadoop -g hadoop -m hadoop
@@ -49,21 +49,22 @@ COPY config/sshd_config /etc/ssh/sshd_config
 COPY config/ssh_config /home/hadoop/.ssh/config
 COPY config/hadoop-env.sh config/hdfs-site.xml config/hdfs-site.xml config/core-site.xml \
      config/core-site.xml config/mapred-site.xml config/yarn-site.xml config/yarn-site.xml \
-     $HADOOP_HOME/etc/hadoop/
+     $HADOOP_CONF_DIR/
 
 # Adding initialisation script
-COPY hadoop-scripts/init-hadoop.sh $HADOOP_HOME/etc/hadoop/
+COPY hadoop-scripts/init-hadoop.sh $HADOOP_CONF_DIR/
 
 # Adding utilities
 RUN mkdir -p /home/hadoop/utils
 COPY utils/start-hadoop.sh utils/stop-hadoop.sh utils/run-wordcount.sh utils/format-namenode.sh /home/hadoop/utils/
 
 # Replacing Hadoop slave file with provided one and changing logs directory
-RUN rm $HADOOP_HOME/etc/hadoop/slaves
-RUN ln -s /config/slaves $HADOOP_HOME/etc/hadoop/slaves
+RUN rm $HADOOP_CONF_DIR/slaves
+RUN ln -s /config/slaves $HADOOP_CONF_DIR/slaves
 RUN ln -s /data/logs/hadoop $HADOOP_HOME/logs
 
 # Set permissions on Hadoop home
+RUN chown -R hadoop:hadoop $HADOOP_CONF_DIR
 RUN chown -R hadoop:hadoop /home/hadoop
 
 # Cleanup
@@ -77,4 +78,4 @@ VOLUME /data
 VOLUME /config
 VOLUME /deployments
 
-ENTRYPOINT [ "sh", "-c", "$HADOOP_HOME/etc/hadoop/init-hadoop.sh; service ssh start; bash"]
+ENTRYPOINT [ "sh", "-c", "$HADOOP_CONF_DIR/init-hadoop.sh; service ssh start; bash"]

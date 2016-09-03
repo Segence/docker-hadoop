@@ -51,10 +51,9 @@ $DOCKER_DNS_SEARCH \
 -p 8033:8033 \
 -p 8088:8088 \
 -p 9000:9000 \
--p 50010:50010 \
 -p 50070:50070 \
 -p 50090:50090 \
 -v /hadoop/data:/data \
 -v /hadoop/slaves-config:/config:ro \
 -v /hadoop/deployments:/deployments:ro \
-segence/hadoop:0.3.0
+segence/hadoop:0.3.1
