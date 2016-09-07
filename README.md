@@ -14,11 +14,11 @@ This Docker container contains a full Hadoop distribution with the following com
 Setting up a new Hadoop cluster
 -------------------------------
 
-For all below steps the Docker image `segence/hadoop:0.3.1` has to be built or
+For all below steps the Docker image `segence/hadoop:0.3.2` has to be built or
 pulled from DockerHub.
 
 - Build the current image locally: `./build-docker-image.sh`
-- Pull from DockerHub: `docker pull segence/hadoop:0.3.1`
+- Pull from DockerHub: `docker pull segence/hadoop:0.3.2`
 
 The default SSH port of the Docker containers is `2222`.
 This is, so in a standalone cluster setup, each *namenode* and *datanode* containers
@@ -151,6 +151,7 @@ Web interfaces
 The main web interfaces are:
 
 - Namenode UI (system info & HDFS browser): [http://localhost:50070](http://localhost:50070)
+- Datanode UI: [http://localhost:50075](http://localhost:50075)
 - WebHDFS REST API: [http://localhost:50070/webhdfs/v1](http://localhost:50070/webhdfs/v1)
 - Application Tracker UI (YARN job handling): [http://localhost:8088](http://localhost:8088)
 
