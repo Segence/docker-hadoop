@@ -56,4 +56,4 @@ $DOCKER_DNS_SEARCH \
 -v /hadoop/data:/data \
 -v /hadoop/slaves-config:/config:ro \
 -v /hadoop/deployments:/deployments:ro \
-segence/hadoop:0.3.2
+segence/hadoop:0.4.0

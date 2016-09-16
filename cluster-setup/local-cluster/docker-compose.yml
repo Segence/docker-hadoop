@@ -1,7 +1,7 @@
 version: '2'
 services:
   hadoop-master:
-    image: segence/hadoop:0.3.2
+    image: segence/hadoop:0.4.0
     container_name: hadoop-master
     hostname: hadoop-master
     ports: # HOST:CONTAINER
@@ -13,6 +13,7 @@ services:
       - "8033:8033"
       - "8088:8088"
       - "9000:9000"
+      - "9001:9001"
       - "50070:50070"
       - "50090:50090"
     environment:
@@ -27,7 +28,7 @@ services:
         aliases:
          - hadoop-master
   hadoop-slave1:
-    image: segence/hadoop:0.3.2
+    image: segence/hadoop:0.4.0
     container_name: hadoop-slave1
     hostname: hadoop-slave1
     ports:

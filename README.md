@@ -10,15 +10,16 @@ This Docker container contains a full Hadoop distribution with the following com
 - Oracle JDK 8
 - Scala 2.11.8
 - Spark 2.0.0
+- Zeppelin 0.6.1
 
 Setting up a new Hadoop cluster
 -------------------------------
 
-For all below steps the Docker image `segence/hadoop:0.3.2` has to be built or
+For all below steps the Docker image `segence/hadoop:0.4.0` has to be built or
 pulled from DockerHub.
 
 - Build the current image locally: `./build-docker-image.sh`
-- Pull from DockerHub: `docker pull segence/hadoop:0.3.2`
+- Pull from DockerHub: `docker pull segence/hadoop:0.4.0`
 
 The default SSH port of the Docker containers is `2222`.
 This is, so in a standalone cluster setup, each *namenode* and *datanode* containers
@@ -146,14 +147,16 @@ your local system
 Web interfaces
 --------------
 
-### Main Hadoop web interfaces
+### List of web interfaces
 
-The main web interfaces are:
-
-- Namenode UI (system info & HDFS browser): [http://localhost:50070](http://localhost:50070)
-- Datanode UI: [http://localhost:50075](http://localhost:50075)
-- WebHDFS REST API: [http://localhost:50070/webhdfs/v1](http://localhost:50070/webhdfs/v1)
-- Application Tracker UI (YARN job handling): [http://localhost:8088](http://localhost:8088)
+| **Hadoop Web UIs**        |**URL**                             |
+|:--------------------------|:-----------------------------------|
+| *Hadoop Name Node*        | http://localhost:50070             |
+| *Hadoop Data Node*        | http://localhost:50075             |
+| *WebHDFS REST API*        | http://localhost:50070/webhdfs/v1  |
+| *YARN Resource Manager*   | http://localhost:8088              |
+| *Spark UI*                | http://localhost:4040              |
+| *Zeppelin UI*             | http://localhost:9001              |
 
 Change `localhost` to the IP address or host name of the *namenode*.
 
@@ -185,3 +188,18 @@ Once you're on the *namenode*, issue `spark-shell`:
     val input = sc.textFile("/user/hadoop/input")
     val splitContent = input.map(r => r.split(" "))
     splitContent.foreach(line => println(line.toSeq))
+
+### Running a notebook in Zeppelin
+
+1. Log in to the *namenode*, e.g. `docker exec -it hadoop-master bash`
+2. Become the *hadoop* user: `su hadoop`
+3. Start Zeppelin: `zeppelin-daemon.sh start`
+4. Open the [Zeppelin UI](http://localhost:9001) in your browser
+5. On the home page, click on 'Create new note'
+6. The below snippet is written in R. It loads the directory content of the input files used in the sample MapReduce job:
+
+```
+%r
+df <- read.df(sqlContext, "/user/hadoop/input/", source = "text")
+head(df)
+```
