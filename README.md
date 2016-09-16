@@ -149,14 +149,14 @@ Web interfaces
 
 ### List of web interfaces
 
-| **Hadoop Web UIs**        |**URL**                             |
-|:--------------------------|:-----------------------------------|
-| *Hadoop Name Node*        | http://localhost:50070             |
-| *Hadoop Data Node*        | http://localhost:50075             |
-| *WebHDFS REST API*        | http://localhost:50070/webhdfs/v1  |
-| *YARN Resource Manager*   | http://localhost:8088              |
-| *Spark UI*                | http://localhost:4040              |
-| *Zeppelin UI*             | http://localhost:9001              |
+| **Hadoop Web UIs**        |**URL**                                                                 |
+|:--------------------------|:-----------------------------------------------------------------------|
+| *Hadoop Name Node*        | [http://localhost:50070](http://localhost:50070)                       |
+| *Hadoop Data Node*        | [http://localhost:50075](http://localhost:50075)                       |
+| *WebHDFS REST API*        | [http://localhost:50070/webhdfs/v1](http://localhost:50070/webhdfs/v1) |
+| *YARN Resource Manager*   | [http://localhost:8088](http://localhost:8088)                         |
+| *Spark UI*                | [http://localhost:4040](http://localhost:4040)                         |
+| *Zeppelin UI*             | [http://localhost:9001](http://localhost:9001)                         |
 
 Change `localhost` to the IP address or host name of the *namenode*.
 
