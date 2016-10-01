@@ -12,7 +12,7 @@
     </property>
     <property>
         <name>dfs.replication</name>
-        <value>2</value>
+        <value>HDFS_REPLICATION_FACTOR</value>
     </property>
     <property>
         <name>dfs.webhdfs.enabled</name>

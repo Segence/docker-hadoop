@@ -1,9 +1,9 @@
 version: '2'
 services:
-  hadoop-master:
-    image: segence/hadoop:0.4.1
-    container_name: hadoop-master
-    hostname: hadoop-master
+  hadoop-namenode:
+    image: segence/hadoop
+    container_name: hadoop-namenode
+    hostname: hadoop-namenode
     ports: # HOST:CONTAINER
       - "2222:2222"
       - "4040:4040"
@@ -13,12 +13,12 @@ services:
       - "8032:8032"
       - "8033:8033"
       - "8088:8088"
-      - "9000:9000"
       - "9001:9001"
       - "50070:50070"
       - "50090:50090"
     environment:
-      - HADOOP_NAMENODE_HOST=hadoop-master
+      - HDFS_REPLICATION_FACTOR=1
+      - HADOOP_NAMENODE_HOST=hadoop-namenode
     volumes:
       - ./data-master:/data
       - ./slaves-config:/config:ro
@@ -27,25 +27,32 @@ services:
     networks:
       hadoop:
         aliases:
-         - hadoop-master
-  hadoop-slave1:
-    image: segence/hadoop:0.4.1
-    container_name: hadoop-slave1
-    hostname: hadoop-slave1
+         - hadoop-namenode
+  hadoop-datanode1:
+    image: segence/hadoop
+    container_name: hadoop-datanode1
+    hostname: hadoop-datanode1
     ports:
-      - "50010:50010"
-      - "50020:50020"
+      - "8042:8042"
       - "50075:50075"
+    expose:
+      - "34000-35000"
+      - "50010"
+      - "50020"
+      - "50040"
     environment:
-      - HADOOP_NAMENODE_HOST=hadoop-master
+      - HDFS_REPLICATION_FACTOR=1
+      - HADOOP_NAMENODE_HOST=hadoop-namenode
     volumes:
       - ./data-slave1:/data
       - ./slaves-config:/config:ro
+    links:
+      - hadoop-namenode
     tty: true
     networks:
       hadoop:
         aliases:
-         - hadoop-slave1
+         - hadoop-datanode1
 networks:
   hadoop:
     driver: bridge

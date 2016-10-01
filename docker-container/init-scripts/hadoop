@@ -1,0 +1,34 @@
+#! /bin/sh
+### BEGIN INIT INFO
+# Provides: hadoop
+# Required-Start:
+# Required-Stop:
+# Default-Start:
+# Default-Stop:
+# Short-Description: Hadoop
+# Description: This file starts and stops the Hadoop cluster
+#
+### END INIT INFO
+
+export HADOOP_HOME=/usr/local/hadoop
+
+case "$1" in
+ start)
+   su hadoop -c $HADOOP_HOME/bin/init/start-hadoop.sh
+   ;;
+ stop)
+   su hadoop -c $HADOOP_HOME/bin/init/stop-hadoop.sh
+   sleep 10
+   ;;
+ status)
+   if jps | grep -q NameNode; then
+     echo "Hadoop is running"
+   else
+     echo "Hadoop is not running"
+   fi
+   ;;
+ *)
+   echo "Usage: hadoop {start|stop|status}" >&2
+   exit 3
+   ;;
+esac

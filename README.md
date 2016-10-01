@@ -6,7 +6,7 @@ Overview
 
 This Docker container contains a full Hadoop distribution with the following components:
 
-- Hadoop 2.7.2 (including YARN)
+- Hadoop 2.7.3 (including YARN)
 - Oracle JDK 8
 - Scala 2.11.8
 - Spark 2.0.0
@@ -15,11 +15,11 @@ This Docker container contains a full Hadoop distribution with the following com
 Setting up a new Hadoop cluster
 -------------------------------
 
-For all below steps the Docker image `segence/hadoop:0.4.1` has to be built or
+For all below steps the Docker image `segence/hadoop:latest` has to be built or
 pulled from DockerHub.
 
 - Build the current image locally: `./build-docker-image.sh`
-- Pull from DockerHub: `docker pull segence/hadoop:0.4.1`
+- Pull from DockerHub: `docker pull segence/hadoop:latest`
 
 The default SSH port of the Docker containers is `2222`.
 This is, so in a standalone cluster setup, each *namenode* and *datanode* containers
@@ -48,12 +48,15 @@ other than the default one slave node. If you add more slaves then also edit the
 `docker-compose.yml` file by adding more slave node configurations.
 3. Launch the new cluster: `docker-compose up -d`
 
-You can log into the *namenode* (master) by issuing `docker exec -it hadoop-master bash`
-and to the *datanode* (slave) by `docker exec -it hadoop-slave1 bash`.
+You can log into the *namenode* (master) by issuing `docker exec -it hadoop-namenode bash`
+and to the *datanode* (slave) by `docker exec -it hadoop-datanode1 bash`.
 
-For a single datanode cluster, replication has to be set to 1, otherwise clients
-won't be able to copy files into HDFS. To change the default replication (2) simply
-change the `dfs.replication` entry to 1 in the `$HADOOP_CONF_DIR/hdfs-site.xml` file.
+By default, the HDFS replication factor is set to 1, because it is assumed that
+a local Docker cluster will be started with a single datanode.
+To override the replication setting simply change the `HDFS_REPLICATION_FACTOR`
+environment variable in the `docker-compose.yml` file (and also add more datanodes).
+Adding more data nodes adds the complexity of exposing all datanode UI ports to
+`localhost`. In this scenario, no UI ports should be exposed to avoid the conflict.
 
 ### Setting up a standalone Hadoop cluster
 
@@ -73,6 +76,10 @@ You can use the script `cluster-setup/standalone-cluster/setup-rhel.sh` to achie
 the above, as well as to create the required directories and change their ownership
 (as in point 1 and 2 below, so you can skip them if you used the RHEL setup script).
 
+The cluster setup runs with host networking, so the Hadoop nodes will get the hostname
+and DNS settings directly from the host machine.
+Make sure IP addresses and DNS names, as well as DNS resolution is correctly set up on the host machines.
+
 #### Namenode setup
 
 1. Create the following directories on the host:
@@ -82,8 +89,8 @@ the above, as well as to create the required directories and change their owners
 3. Create the file `/hadoop/slaves-config/slaves` listing all slave node host names on a separate line
 4. Copy the `start-namenode.sh` file onto the system (e.g. into `/hadoop/start-namenode.sh`)
 5. Launch the new *namenode*:
-`/hadoop/start-namenode.sh <HOST NAME> [DNS SEARCH DOMAIN] [DNS SERVER HOST]`,
-where *HOST NAME* is the host name of the *namenode*.
+`/hadoop/start-namenode.sh [HDFS REPLICATION FACTOR]`,
+where *HDFS REPLICATION FACTOR* is the replication factor for HDFS blocks (defaults to 2).
 
 #### Datanode setup
 
@@ -92,26 +99,17 @@ where *HOST NAME* is the host name of the *namenode*.
 3. Create the file `/hadoop/slaves-config/slaves` listing all slave node host names on a separate line
 4. Copy the `start-datanode.sh` file onto the system (e.g. into `/hadoop/start-datanode.sh`)
 5. Launch the new *datanode* with its ID:
-`/hadoop/start-datanode.sh <HOST NAME> <NAMENODE HOST NAME> [DNS SEARCH DOMAIN] [DNS SERVER HOST]`,
-where *HOST NAME* is the host name of the *datanode* and the 2nd argument has
-to be set to the host name of the *namenode*.
-
-#### Custom DNS setup
-
-Both scripts mentioned above support the addition of custom DNS server configuration.
-As mentioned in the introduction, the Hadoop nodes have to be accessed by host names
-instead of their IP addresses. The *DNS SEARCH DOMAIN* and *DNS SERVER HOST*
-arguments, which are optional, help setting up access to the custom DNS server.
-*DNS SEARCH DOMAIN* is the top-level domain of the Hadoop hosts (e.g. `mycluster.local`)
-and *DNS SERVER HOST* is the host name, or more typically, the IP address of the
-custom DNS server.
+`/hadoop/start-datanode.sh <NAMENODE HOST NAME> [HDFS REPLICATION FACTOR]`,
+where *NAMENODE HOST NAME* is the host name of the *namenode* and *HDFS REPLICATION FACTOR*
+is the replication factor for HDFS blocks (defaults to 2, and has to be consistent throughout
+all cluster nodes).
 
 Starting the cluster
 --------------------
 
 Once either a local or standalone cluster is provisioned, follow the below steps:
 
-1. Log in to the master node, e.g. `docker exec -it hadoop-master bash`
+1. Log in to the master node, e.g. `docker exec -it hadoop-namenode bash`
 2. Become the *hadoop* user: `su hadoop`
 3. Format the HDFS namenode: `~/utils/format-namenode.sh`
 
@@ -119,12 +117,14 @@ HDFS has to be restarted the first time before MapReduce jobs can be successfull
 This is because HDFS creates some data on the first run but stopping it can clean up
 its state so MapReduce jobs can be ran through YARN afterwards.
 
-1. Start Hadoop: `~/utils/start-hadoop.sh`
-2. Stop Hadoop: `~/utils/stop-hadoop.sh`
-3. Start Hadoop again: `~/utils/start-hadoop.sh`
+Execute the following commands as `root`:
 
-Restarting HDFS has to be done **every time** it is stopped, otherwise the first
-MapReduce job will always fail and the cluster will terminate.
+1. Start Hadoop: `service hadoop start`
+2. Stop Hadoop: `service hadoop stop`
+3. Start Hadoop again: `service hadoop start`
+
+Restarting HDFS has to be done **after formatting the namenode**, otherwise running
+the first MapReduce job will always fail and the cluster will terminate.
 
 Verify that the *datanodes* are correctly registered, issue on *namenode*: `hdfs dfsadmin -report`
 
@@ -142,21 +142,22 @@ E.g. listing the contents of the root of the file system: `hdfs dfs -ls /`
 1. Make sure you've got the same version of Hadoop downloaded and extracted on
 your local system
 2. Go into your Hadoop installation directory, and then into the `bin` directory.
-3. For example to list the contents of your HDFS cluster, use: `./hdfs dfs -ls hdfs://localhost:9000/`
+3. For example to list the contents of your HDFS cluster, use: `./hdfs dfs -ls hdfs://localhost:8020/`
 
 Web interfaces
 --------------
 
 ### List of web interfaces
 
-| **Hadoop Web UIs**        |**URL**                                                                 |
-|:--------------------------|:-----------------------------------------------------------------------|
-| *Hadoop Name Node*        | [http://localhost:50070](http://localhost:50070)                       |
-| *Hadoop Data Node*        | [http://localhost:50075](http://localhost:50075)                       |
-| *WebHDFS REST API*        | [http://localhost:50070/webhdfs/v1](http://localhost:50070/webhdfs/v1) |
-| *YARN Resource Manager*   | [http://localhost:8088](http://localhost:8088)                         |
-| *Spark UI*                | [http://localhost:4040](http://localhost:4040)                         |
-| *Zeppelin UI*             | [http://localhost:9001](http://localhost:9001)                         |
+| **Web UIs**                   | **URL**                                                                |
+|:------------------------------|:-----------------------------------------------------------------------|
+| *Hadoop Name Node*            | [http://localhost:50070](http://localhost:50070)                       |
+| *Hadoop Data Node*            | [http://localhost:50075](http://localhost:50075)                       |
+| *WebHDFS REST API*            | [http://localhost:50070/webhdfs/v1](http://localhost:50070/webhdfs/v1) |
+| *NodeManager UI on Data Node* | [http://localhost:8042](http://localhost:8042)                         |
+| *YARN Resource Manager*       | [http://localhost:8088](http://localhost:8088)                         |
+| *Spark UI*                    | [http://localhost:4040](http://localhost:4040)                         |
+| *Zeppelin UI*                 | [http://localhost:9001](http://localhost:9001)                         |
 
 Change `localhost` to the IP address or host name of the *namenode*.
 
@@ -174,7 +175,7 @@ The script will create a directory called *input* with some sample files.
 It'll upload them into the HDFS cluster and run a simple MapReduce job.
 It'll print the results to the console.
 
-1. Log in to the *namenode*, e.g. `docker exec -it hadoop-master bash`
+1. Log in to the *namenode*, e.g. `docker exec -it hadoop-namenode bash`
 2. Become the *hadoop* user: `su hadoop`
 3. Run `~/utils/run-wordcount.sh`
 
@@ -185,18 +186,31 @@ The below example Spark job reads those files and simply splits the file content
 
 Once you're on the *namenode*, issue `spark-shell`:
 
-    val input = sc.textFile("/user/hadoop/input")
-    val splitContent = input.map(r => r.split(" "))
-    splitContent.foreach(line => println(line.toSeq))
+```
+val input = sc.textFile("/user/hadoop/input")
+val splitContent = input.map(r => r.split(" "))
+splitContent.foreach(line => println(line.toSeq))
+```
+
+To run it against the YARN cluster, launch with `spark-shell --master=yarn`.
+In this way, `println` does not execute in the driver since you are executing it on
+elements of the RDD. It executes in an executor, which can happen to
+execute in-process in local mode. In general you should not expect this to print
+results in the driver.
 
 ### Running a notebook in Zeppelin
 
-1. Log in to the *namenode*, e.g. `docker exec -it hadoop-master bash`
+Zeppelin has to be ran as the *hadoop* user, so make sure to start the
+service as the *hadoop* user. It won't run properly with all interpreters
+under a different user!
+
+1. Log in to the *namenode*, e.g. `docker exec -it hadoop-namenode bash`
 2. Become the *hadoop* user: `su hadoop`
-3. Start Zeppelin: `zeppelin-daemon.sh start`
-4. Open the [Zeppelin UI](http://localhost:9001) in your browser
-5. On the home page, click on 'Create new note'
-6. The below snippet is written in R. It loads the directory content of the input files used in the sample MapReduce job:
+3. Go into the home directory of the *hadoop* user: `cd`
+4. Start Zeppelin: `zeppelin-daemon.sh start`
+5. Open the [Zeppelin UI](http://localhost:9001) in your browser
+6. On the home page, click on 'Create new note'
+7. The below snippet is written in R. It loads the directory content of the input files used in the sample MapReduce job:
 
 ```
 %r
