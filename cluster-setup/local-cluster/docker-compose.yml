@@ -22,10 +22,6 @@ services:
       - ./slaves-config:/config:ro
       - ./deployments:/deployments:ro
     tty: true
-    networks:
-      hadoop:
-        aliases:
-         - hadoop-namenode
   hadoop-datanode1:
     image: segence/hadoop
     container_name: hadoop-datanode1
@@ -47,10 +43,3 @@ services:
     links:
       - hadoop-namenode
     tty: true
-    networks:
-      hadoop:
-        aliases:
-         - hadoop-datanode1
-networks:
-  hadoop:
-    driver: bridge
