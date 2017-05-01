@@ -16,9 +16,9 @@ RUN ssh-keygen -t rsa -f /home/hadoop/.ssh/id_rsa -P '' && \
     cat /home/hadoop/.ssh/id_rsa.pub >> /home/hadoop/.ssh/authorized_keys
 
 # Installing Hadoop
-RUN wget http://apache.mirror.anlx.net/hadoop/common/hadoop-2.7.3/hadoop-2.7.3.tar.gz
-RUN tar -xzvf hadoop-2.7.3.tar.gz -C /usr/local/
-RUN mv /usr/local/hadoop-2.7.3 /usr/local/hadoop
+RUN wget http://apache.mirror.anlx.net/hadoop/common/hadoop-2.8.0/hadoop-2.8.0.tar.gz
+RUN tar -xzvf hadoop-2.8.0.tar.gz -C /usr/local/
+RUN mv /usr/local/hadoop-2.8.0 /usr/local/hadoop
 ENV HADOOP_HOME=/usr/local/hadoop
 ENV HADOOP_CONF_DIR=$HADOOP_HOME/etc/hadoop
 ENV YARN_CONF_DIR=$HADOOP_HOME/etc/hadoop
@@ -31,9 +31,9 @@ RUN chown -R root:root /usr/local/scala
 ENV SCALA_HOME=/usr/local/scala
 
 # Installing Spark
-RUN wget http://d3kbcqa49mib13.cloudfront.net/spark-2.0.0-bin-without-hadoop.tgz
-RUN tar -xzvf spark-2.0.0-bin-without-hadoop.tgz -C /usr/local/
-RUN mv /usr/local/spark-2.0.0-bin-without-hadoop /usr/local/spark
+RUN wget http://d3kbcqa49mib13.cloudfront.net/spark-2.1.0-bin-without-hadoop.tgz
+RUN tar -xzvf spark-2.1.0-bin-without-hadoop.tgz -C /usr/local/
+RUN mv /usr/local/spark-2.1.0-bin-without-hadoop /usr/local/spark
 ENV SPARK_HOME=/usr/local/spark
 ENV LD_LIBRARY_PATH=$HADOOP_HOME/lib/native/:$LD_LIBRARY_PATH
 
@@ -48,9 +48,9 @@ RUN R -e "install.packages('ggplot2', repos = 'http://cran.us.r-project.org')"
 RUN R -e "install.packages(c('devtools','mplot', 'googleVis'), repos = 'http://cran.us.r-project.org'); require(devtools); install_github('ramnathv/rCharts')"
 
 # Installing Zeppelin
-RUN wget http://mirrors.ukfast.co.uk/sites/ftp.apache.org/zeppelin/zeppelin-0.6.1/zeppelin-0.6.1-bin-netinst.tgz
-RUN tar -xzvf zeppelin-0.6.1-bin-netinst.tgz -C /usr/local/
-RUN mv /usr/local/zeppelin-0.6.1-bin-netinst /usr/local/zeppelin
+RUN wget http://mirrors.ukfast.co.uk/sites/ftp.apache.org/zeppelin/zeppelin-0.7.1/zeppelin-0.7.1-bin-netinst.tgz
+RUN tar -xzvf zeppelin-0.7.1-bin-netinst.tgz -C /usr/local/
+RUN mv /usr/local/zeppelin-0.7.1-bin-netinst /usr/local/zeppelin
 
 ENV ZEPPELIN_HOME=/usr/local/zeppelin
 COPY config/zeppelin-env.sh $ZEPPELIN_HOME/conf/zeppelin-env.sh

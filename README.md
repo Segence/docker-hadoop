@@ -6,11 +6,11 @@ Overview
 
 This Docker container contains a full Hadoop distribution with the following components:
 
-- Hadoop 2.7.3 (including YARN)
+- Hadoop 2.8.0 (including YARN)
 - Oracle JDK 8
 - Scala 2.11.8
-- Spark 2.0.0
-- Zeppelin 0.6.1
+- Spark 2.1.0
+- Zeppelin 0.7.1
 
 Setting up a new Hadoop cluster
 -------------------------------
