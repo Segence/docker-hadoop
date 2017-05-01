@@ -15,19 +15,18 @@ This Docker container contains a full Hadoop distribution with the following com
 Setting up a new Hadoop cluster
 -------------------------------
 
-For all below steps the Docker image `segence/hadoop:latest` has to be built or
-pulled from DockerHub.
+For all below steps, the Docker image `segence/hadoop:latest` has to be built or pulled from [DockerHub](https://hub.docker.com/r/segence/hadoop/).
 
 - Build the current image locally: `./build-docker-image.sh`
 - Pull from DockerHub: `docker pull segence/hadoop:latest`
 
 The default SSH port of the Docker containers is `2222`.
-This is, so in a standalone cluster setup, each *namenode* and *datanode* containers
+This is, so in a standalone cluster setup, each *namenode* and *datanode*
 can be ran on separate physical server (or virtual appliances). The servers can
-still use the default SSH port `22` but the data nodes, running inside Docker containers,
+still use the default SSH port `22` but the *datanodes*, running inside Docker containers,
 will be using port `2222`. This port is automatically exposed.
 It's important to note that all exposed ports have to be open on the firewall of
-the servers, so other nodes in the cluster can access them.
+the physical servers, so other nodes in the cluster can access them.
 
 Hadoop host names have to follow the **hadoop-*** format.
 Automatic acceptance of SSH host key fingerprints is enabled for any hosts with
@@ -109,7 +108,7 @@ Starting the cluster
 
 Once either a local or standalone cluster is provisioned, follow the below steps:
 
-1. Log in to the master node, e.g. `docker exec -it hadoop-namenode bash`
+1. Log in to the *namenode*, e.g. `docker exec -it hadoop-namenode bash`
 2. Become the *hadoop* user: `su hadoop`
 3. Format the HDFS namenode: `~/utils/format-namenode.sh`
 
