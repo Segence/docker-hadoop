@@ -20,8 +20,13 @@ RUN wget http://apache.mirror.anlx.net/hadoop/common/hadoop-2.8.0/hadoop-2.8.0.t
 RUN tar -xzvf hadoop-2.8.0.tar.gz -C /usr/local/
 RUN mv /usr/local/hadoop-2.8.0 /usr/local/hadoop
 ENV HADOOP_HOME=/usr/local/hadoop
+ENV HADOOP_LIB_DIR=$HADOOP_HOME/share/hadoop/common/lib
 ENV HADOOP_CONF_DIR=$HADOOP_HOME/etc/hadoop
 ENV YARN_CONF_DIR=$HADOOP_HOME/etc/hadoop
+
+# Installing JARs for Azure Data Lake
+RUN wget http://central.maven.org/maven2/org/apache/hadoop/hadoop-azure-datalake/2.8.0/hadoop-azure-datalake-2.8.0.jar -O $HADOOP_LIB_DIR/hadoop-azure-datalake-2.8.0.jar
+RUN wget http://central.maven.org/maven2/com/microsoft/azure/azure-data-lake-store-sdk/2.1.4/azure-data-lake-store-sdk-2.1.4.jar -O $HADOOP_LIB_DIR/azure-data-lake-store-sdk-2.1.4.jar
 
 # Installing Scala
 RUN wget http://downloads.lightbend.com/scala/2.11.8/scala-2.11.8.tgz
