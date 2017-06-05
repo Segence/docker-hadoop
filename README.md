@@ -7,10 +7,11 @@ Overview
 This Docker container contains a full Hadoop distribution with the following components:
 
 - Hadoop 2.8.0 (including YARN)
-- Oracle JDK 8
-- Scala 2.11.8
+- Hive 2.1.1
 - Spark 2.1.0
 - Zeppelin 0.7.1
+
+JVM: Oracle JDK 8 and Scala 2.11.8
 
 Setting up a new Hadoop cluster
 -------------------------------
@@ -157,6 +158,7 @@ Web interfaces
 | *YARN Resource Manager*       | [http://localhost:8088](http://localhost:8088)                         |
 | *Spark UI*                    | [http://localhost:4040](http://localhost:4040)                         |
 | *Zeppelin UI*                 | [http://localhost:9001](http://localhost:9001)                         |
+| *Hive WebUI*                 | [http://localhost:10002](http://localhost:10002)                         |
 
 Change `localhost` to the IP address or host name of the *namenode*.
 
@@ -216,3 +218,59 @@ under a different user!
 df <- read.df(sqlContext, "/user/hadoop/input/", source = "text")
 head(df)
 ```
+
+Hive
+----
+
+### Setup
+
+The example set up steps below use an embedded [Derby](https://db.apache.org/derby) database to store Hive metadata.
+It is only recommended for testing and developing purposes.
+In a production environment a remote SQL database is recommended.
+The supported database types by `schematool` are available [here](https://cwiki.apache.org/confluence/display/Hive/Hive+Schema+Tool#HiveSchemaTool-TheHiveSchemaTool).
+
+1. Log in to the *namenode*, e.g. `docker exec -it hadoop-namenode bash`
+2. Become the *hadoop* user: `su hadoop`
+3. Run the following commands to create the required HDFS directories and set their appropriate permissions:
+
+        ~/utils/init-hive-hdfs.sh
+
+4. Initialise Hive schema. An embedded Derby database is used here.
+   Using Derby, it will create a file called `metastore_db` in the current directory,
+   which holds neccessary metadata about Hive and is required later to run the Hive server.
+   Run this command in a directory where the metastore should be stored.
+   It can be the `hadoop` user's home directory.
+
+        schematool -dbType derby -initSchema
+
+   If this command fails simply remove the metastore: `rm metastore_db`.
+
+5. Launch Hive: `hiveserver2`
+
+### Hive sample usage
+
+Become the *hadoop* user: `su hadoop` first.
+
+Connect to the local Hive instance: `beeline -n hadoop -u jdbc:hive2://localhost:10000`
+
+Create a table:
+
+    CREATE TABLE IF NOT EXISTS employee (
+      eid int,
+      name String,
+      salary String,
+      destination String
+    )
+    COMMENT 'Employee details'
+    ROW FORMAT DELIMITED
+    FIELDS TERMINATED BY '\t'
+    LINES TERMINATED BY '\n'
+    STORED AS TEXTFILE;
+
+Insert some data into it:
+
+    INSERT INTO employee VALUES(10, 'Rob', '50000', 'London');
+
+Query its contents:
+
+    SELECT * FROM employee;

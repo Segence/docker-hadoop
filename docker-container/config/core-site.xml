@@ -4,4 +4,12 @@
         <name>fs.defaultFS</name>
         <value>hdfs://HADOOP_NAMENODE_HOST/</value>
     </property>
+    <property>
+        <name>hadoop.proxyuser.hadoop.groups</name>
+        <value>*</value>
+    </property>
+    <property>
+        <name>hadoop.proxyuser.hadoop.hosts</name>
+        <value>*</value>
+    </property>
 </configuration>

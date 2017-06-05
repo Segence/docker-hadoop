@@ -1,4 +1,4 @@
-FROM isuper/java-oracle:jdk_8
+FROM sgrio/java-oracle:jdk_8
 
 MAINTAINER Segence <segence@segence.com>
 
@@ -22,13 +22,21 @@ RUN mv /usr/local/hadoop-2.8.0 /usr/local/hadoop
 ENV HADOOP_HOME=/usr/local/hadoop
 ENV HADOOP_CONF_DIR=$HADOOP_HOME/etc/hadoop
 ENV YARN_CONF_DIR=$HADOOP_HOME/etc/hadoop
+RUN chown -R hadoop:hadoop $HADOOP_HOME
+
+# Installing Hive
+RUN wget http://mirror.ox.ac.uk/sites/rsync.apache.org/hive/hive-2.1.1/apache-hive-2.1.1-bin.tar.gz
+RUN tar -xzvf apache-hive-2.1.1-bin.tar.gz -C /usr/local/
+RUN mv /usr/local/apache-hive-2.1.1-bin /usr/local/apache-hive
+ENV HIVE_HOME=/usr/local/apache-hive
+RUN chown -R hadoop:hadoop $HIVE_HOME
 
 # Installing Scala
 RUN wget http://downloads.lightbend.com/scala/2.11.8/scala-2.11.8.tgz
 RUN tar -xzvf scala-2.11.8.tgz -C /usr/local/
 RUN mv /usr/local/scala-2.11.8 /usr/local/scala
-RUN chown -R root:root /usr/local/scala
 ENV SCALA_HOME=/usr/local/scala
+RUN chown -R root:root $SCALA_HOME
 
 # Installing Spark
 RUN wget http://d3kbcqa49mib13.cloudfront.net/spark-2.1.0-bin-without-hadoop.tgz
@@ -36,6 +44,7 @@ RUN tar -xzvf spark-2.1.0-bin-without-hadoop.tgz -C /usr/local/
 RUN mv /usr/local/spark-2.1.0-bin-without-hadoop /usr/local/spark
 ENV SPARK_HOME=/usr/local/spark
 ENV LD_LIBRARY_PATH=$HADOOP_HOME/lib/native/:$LD_LIBRARY_PATH
+RUN chown -R hadoop:hadoop $SPARK_HOME
 
 # Configuring Hadoop classpath for Spark
 RUN echo "export SPARK_DIST_CLASSPATH=$($HADOOP_HOME/bin/hadoop classpath)" > /usr/local/spark/conf/spark-env.sh
@@ -51,16 +60,14 @@ RUN R -e "install.packages(c('devtools','mplot', 'googleVis'), repos = 'http://c
 RUN wget http://mirrors.ukfast.co.uk/sites/ftp.apache.org/zeppelin/zeppelin-0.7.1/zeppelin-0.7.1-bin-netinst.tgz
 RUN tar -xzvf zeppelin-0.7.1-bin-netinst.tgz -C /usr/local/
 RUN mv /usr/local/zeppelin-0.7.1-bin-netinst /usr/local/zeppelin
-
 ENV ZEPPELIN_HOME=/usr/local/zeppelin
 COPY config/zeppelin-env.sh $ZEPPELIN_HOME/conf/zeppelin-env.sh
 COPY config/zeppelin-site.xml $ZEPPELIN_HOME/conf/zeppelin-site.xml
-
 RUN chown -R hadoop:hadoop $ZEPPELIN_HOME
 
 # Setting the PATH environment variable globally and for the Hadoop user
-ENV PATH=$PATH:$JAVA_HOME/bin:/usr/local/hadoop/bin:/usr/local/hadoop/sbin:$SCALA_HOME/bin:$SPARK_HOME/bin:$ZEPPELIN_HOME/bin
-RUN echo "PATH=$PATH:$JAVA_HOME/bin:/usr/local/hadoop/bin:/usr/local/hadoop/sbin:$SCALA_HOME/bin:$SPARK_HOME/bin" >> /home/hadoop/.bashrc
+ENV PATH=$PATH:$JAVA_HOME/bin:$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$HIVE_HOME/bin:$SCALA_HOME/bin:$SPARK_HOME/bin:$ZEPPELIN_HOME/bin
+RUN echo "PATH=$PATH:$JAVA_HOME/bin:$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$HIVE_HOME/bin:$SCALA_HOME/bin:$SPARK_HOME/bin:$ZEPPELIN_HOME/bin" >> /home/hadoop/.bashrc
 
 # Hadoop configuration
 COPY config/sshd_config /etc/ssh/sshd_config
@@ -77,7 +84,9 @@ COPY init-scripts/hadoop /etc/init.d/
 
 # Adding utilities
 RUN mkdir -p /home/hadoop/utils
-COPY utils/run-wordcount.sh utils/format-namenode.sh /home/hadoop/utils/
+COPY utils/run-wordcount.sh utils/format-namenode.sh utils/init-hive-hdfs.sh /home/hadoop/utils/
+
+RUN chown -R hadoop:hadoop /home/hadoop
 
 # Replacing Hadoop slave file with provided one and changing logs directory
 RUN rm $HADOOP_CONF_DIR/slaves
@@ -88,16 +97,12 @@ RUN ln -s /data/logs/hadoop $HADOOP_HOME/logs
 RUN ln -s $HADOOP_HOME/logs /var/log/hadoop
 RUN ln -s $ZEPPELIN_HOME/logs /var/log/zeppelin
 
-# Set permissions on Hadoop home
-RUN chown -R hadoop:hadoop $HADOOP_HOME
-RUN chown -R hadoop:hadoop /home/hadoop
-
 # Cleanup
 RUN rm -rf /tmp/*
 
 WORKDIR /root
 
-EXPOSE  2222 4040 8020 8030 8031 8032 8033 8042 8088 9001 50010 50020 50070 50075 50090 50100
+EXPOSE  2222 4040 8020 8030 8031 8032 8033 8042 8088 9001 10000 10001 10002 50010 50020 50070 50075 50090 50100
 
 VOLUME /data
 VOLUME /config
