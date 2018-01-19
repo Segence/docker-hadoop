@@ -16,24 +16,24 @@ RUN ssh-keygen -t rsa -f /home/hadoop/.ssh/id_rsa -P '' && \
     cat /home/hadoop/.ssh/id_rsa.pub >> /home/hadoop/.ssh/authorized_keys
 
 # Installing Hadoop
-RUN wget http://apache.mirror.anlx.net/hadoop/common/hadoop-2.8.0/hadoop-2.8.0.tar.gz
-RUN tar -xzvf hadoop-2.8.0.tar.gz -C /usr/local/
-RUN mv /usr/local/hadoop-2.8.0 /usr/local/hadoop
+RUN wget http://apache.mirror.anlx.net/hadoop/common/hadoop-2.9.0/hadoop-2.9.0.tar.gz
+RUN tar -xzvf hadoop-2.9.0.tar.gz -C /usr/local/
+RUN mv /usr/local/hadoop-2.9.0 /usr/local/hadoop
 ENV HADOOP_HOME=/usr/local/hadoop
 ENV HADOOP_CONF_DIR=$HADOOP_HOME/etc/hadoop
 ENV YARN_CONF_DIR=$HADOOP_HOME/etc/hadoop
 
 # Installing Scala
-RUN wget http://downloads.lightbend.com/scala/2.11.8/scala-2.11.8.tgz
-RUN tar -xzvf scala-2.11.8.tgz -C /usr/local/
-RUN mv /usr/local/scala-2.11.8 /usr/local/scala
+RUN wget http://downloads.lightbend.com/scala/2.11.11/scala-2.11.11.tgz
+RUN tar -xzvf scala-2.11.11.tgz -C /usr/local/
+RUN mv /usr/local/scala-2.11.11 /usr/local/scala
 RUN chown -R root:root /usr/local/scala
 ENV SCALA_HOME=/usr/local/scala
 
 # Installing Spark
-RUN wget http://d3kbcqa49mib13.cloudfront.net/spark-2.1.0-bin-without-hadoop.tgz
-RUN tar -xzvf spark-2.1.0-bin-without-hadoop.tgz -C /usr/local/
-RUN mv /usr/local/spark-2.1.0-bin-without-hadoop /usr/local/spark
+RUN wget http://d3kbcqa49mib13.cloudfront.net/spark-2.2.0-bin-without-hadoop.tgz
+RUN tar -xzvf spark-2.2.0-bin-without-hadoop.tgz -C /usr/local/
+RUN mv /usr/local/spark-2.2.0-bin-without-hadoop /usr/local/spark
 ENV SPARK_HOME=/usr/local/spark
 ENV LD_LIBRARY_PATH=$HADOOP_HOME/lib/native/:$LD_LIBRARY_PATH
 
@@ -48,9 +48,9 @@ RUN R -e "install.packages('ggplot2', repos = 'http://cran.us.r-project.org')"
 RUN R -e "install.packages(c('devtools','mplot', 'googleVis'), repos = 'http://cran.us.r-project.org'); require(devtools); install_github('ramnathv/rCharts')"
 
 # Installing Zeppelin
-RUN wget http://mirrors.ukfast.co.uk/sites/ftp.apache.org/zeppelin/zeppelin-0.7.1/zeppelin-0.7.1-bin-netinst.tgz
-RUN tar -xzvf zeppelin-0.7.1-bin-netinst.tgz -C /usr/local/
-RUN mv /usr/local/zeppelin-0.7.1-bin-netinst /usr/local/zeppelin
+RUN wget http://mirrors.ukfast.co.uk/sites/ftp.apache.org/zeppelin/zeppelin-0.7.3/zeppelin-0.7.3-bin-netinst.tgz
+RUN tar -xzvf zeppelin-0.7.3-bin-netinst.tgz -C /usr/local/
+RUN mv /usr/local/zeppelin-0.7.3-bin-netinst /usr/local/zeppelin
 
 ENV ZEPPELIN_HOME=/usr/local/zeppelin
 COPY config/zeppelin-env.sh $ZEPPELIN_HOME/conf/zeppelin-env.sh
