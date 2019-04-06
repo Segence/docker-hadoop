@@ -1,4 +1,4 @@
-FROM isuper/java-oracle:jdk_8
+FROM picoded/ubuntu-openjdk-8-jdk
 
 MAINTAINER Segence <segence@segence.com>
 
