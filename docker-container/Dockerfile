@@ -1,4 +1,4 @@
-FROM picoded/ubuntu-openjdk-8-jdk
+FROM larskghf/oracle-java-jdk8
 
 MAINTAINER Segence <segence@segence.com>
 
