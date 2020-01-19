@@ -55,8 +55,8 @@ export SPARK_HOME=/usr/local/spark              # (required) When it is defined,
 # export HADOOP_CONF_DIR         		# yarn-site.xml is located in configuration directory in HADOOP_CONF_DIR.
 # Pyspark (supported with Spark 1.2.1 and above)
 # To configure pyspark, you need to set spark distribution's path to 'spark.home' property in Interpreter setting screen in Zeppelin GUI
-# export PYSPARK_PYTHON          		# path to the python command. must be the same path on the driver(Zeppelin) and all workers.
-# export PYTHONPATH
+export PYSPARK_PYTHON=python3          		# path to the python command. must be the same path on the driver(Zeppelin) and all workers.
+export PYTHONPATH=python3
 
 ## Spark interpreter options ##
 ##

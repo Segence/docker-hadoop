@@ -22,7 +22,7 @@
 # remote nodes.
 
 # The java implementation to use.
-export JAVA_HOME=/usr/lib/jvm/java-8-oracle
+export JAVA_HOME=/usr/local/openjdk-8
 
 # The jsvc implementation to use. Jsvc is required to run secure datanodes
 # that bind to privileged ports to provide authentication of data transfer
@@ -99,3 +99,6 @@ export HADOOP_IDENT_STRING=$USER
 
 # Changing the default SSH port
 export HADOOP_SSH_OPTS="-p 2222"
+
+export PYSPARK_PYTHON=python3
+export PYSPARK_DRIVER_PYTHON=python3

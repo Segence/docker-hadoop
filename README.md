@@ -6,11 +6,11 @@ Overview
 
 This Docker container contains a full Hadoop distribution with the following components:
 
-- Hadoop 2.9.0 (including YARN)
+- Hadoop 2.9.2 (including YARN)
 - Oracle JDK 8
 - Scala 2.11.11
-- Spark 2.2.0
-- Zeppelin 0.7.3
+- Spark 2.4.4
+- Zeppelin 0.8.2
 
 Setting up a new Hadoop cluster
 -------------------------------
@@ -176,7 +176,7 @@ It'll print the results to the console.
 
 1. Log in to the *namenode*, e.g. `docker exec -it hadoop-namenode bash`
 2. Become the *hadoop* user: `su hadoop`
-3. Go into the home directory of the *hadoop* user: `cd ~`
+3. Go into the home directory of the *hadoop* user: `cd`
 4. Run `~/utils/run-wordcount.sh`
 
 ### Running a sample interactive Spark job

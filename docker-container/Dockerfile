@@ -1,14 +1,19 @@
-FROM isuper/java-oracle:jdk_8
+FROM openjdk:8u232-jdk
 
 MAINTAINER Segence <segence@segence.com>
 
+ARG HADOOP_VERSION=2.9.2
+ARG SPARK_VERSION=2.4.4
+ARG SCALA_VERSION=2.11.11
+ARG ZEPPELIN_VERSION=0.8.2
+
 WORKDIR /tmp
 
-RUN apt-get update && apt-get install -y openssh-server wget vim iputils-ping telnet dnsutils bzip2 ntp
+RUN apt-get update && apt-get install -y openssh-server wget vim iputils-ping telnet dnsutils bzip2 ntp python3 python3-dev python3-pip
 RUN update-rc.d ntp defaults
 
 RUN groupadd hadoop
-RUN useradd -d /home/hadoop -g hadoop -m hadoop
+RUN useradd -d /home/hadoop -g hadoop -m hadoop --shell /bin/bash
 
 # SSH without key
 RUN mkdir /home/hadoop/.ssh
@@ -16,24 +21,24 @@ RUN ssh-keygen -t rsa -f /home/hadoop/.ssh/id_rsa -P '' && \
     cat /home/hadoop/.ssh/id_rsa.pub >> /home/hadoop/.ssh/authorized_keys
 
 # Installing Hadoop
-RUN wget http://apache.mirror.anlx.net/hadoop/common/hadoop-2.9.0/hadoop-2.9.0.tar.gz
-RUN tar -xzvf hadoop-2.9.0.tar.gz -C /usr/local/
-RUN mv /usr/local/hadoop-2.9.0 /usr/local/hadoop
+RUN wget http://apache.mirror.anlx.net/hadoop/common/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz
+RUN tar -xzvf hadoop-${HADOOP_VERSION}.tar.gz -C /usr/local/
+RUN mv /usr/local/hadoop-${HADOOP_VERSION} /usr/local/hadoop
 ENV HADOOP_HOME=/usr/local/hadoop
 ENV HADOOP_CONF_DIR=$HADOOP_HOME/etc/hadoop
 ENV YARN_CONF_DIR=$HADOOP_HOME/etc/hadoop
 
 # Installing Scala
-RUN wget http://downloads.lightbend.com/scala/2.11.11/scala-2.11.11.tgz
-RUN tar -xzvf scala-2.11.11.tgz -C /usr/local/
-RUN mv /usr/local/scala-2.11.11 /usr/local/scala
+RUN wget http://downloads.lightbend.com/scala/${SCALA_VERSION}/scala-${SCALA_VERSION}.tgz
+RUN tar -xzvf scala-${SCALA_VERSION}.tgz -C /usr/local/
+RUN mv /usr/local/scala-${SCALA_VERSION} /usr/local/scala
 RUN chown -R root:root /usr/local/scala
 ENV SCALA_HOME=/usr/local/scala
 
 # Installing Spark
-RUN wget http://d3kbcqa49mib13.cloudfront.net/spark-2.2.0-bin-without-hadoop.tgz
-RUN tar -xzvf spark-2.2.0-bin-without-hadoop.tgz -C /usr/local/
-RUN mv /usr/local/spark-2.2.0-bin-without-hadoop /usr/local/spark
+RUN wget http://apache.mirror.anlx.net/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-without-hadoop.tgz
+RUN tar -xzvf spark-${SPARK_VERSION}-bin-without-hadoop.tgz -C /usr/local/
+RUN mv /usr/local/spark-${SPARK_VERSION}-bin-without-hadoop /usr/local/spark
 ENV SPARK_HOME=/usr/local/spark
 ENV LD_LIBRARY_PATH=$HADOOP_HOME/lib/native/:$LD_LIBRARY_PATH
 
@@ -45,12 +50,11 @@ RUN apt-get install -y libssl-dev libssh2-1-dev libcurl4-openssl-dev libssl-dev 
 RUN R -e "install.packages('devtools', repos = 'http://cran.us.r-project.org')"
 RUN R -e "install.packages('knitr', repos = 'http://cran.us.r-project.org')"
 RUN R -e "install.packages('ggplot2', repos = 'http://cran.us.r-project.org')"
-RUN R -e "install.packages(c('devtools','mplot', 'googleVis'), repos = 'http://cran.us.r-project.org'); require(devtools); install_github('ramnathv/rCharts')"
 
 # Installing Zeppelin
-RUN wget http://mirrors.ukfast.co.uk/sites/ftp.apache.org/zeppelin/zeppelin-0.7.3/zeppelin-0.7.3-bin-netinst.tgz
-RUN tar -xzvf zeppelin-0.7.3-bin-netinst.tgz -C /usr/local/
-RUN mv /usr/local/zeppelin-0.7.3-bin-netinst /usr/local/zeppelin
+RUN wget http://mirrors.ukfast.co.uk/sites/ftp.apache.org/zeppelin/zeppelin-${ZEPPELIN_VERSION}/zeppelin-${ZEPPELIN_VERSION}-bin-netinst.tgz
+RUN tar -xzvf zeppelin-${ZEPPELIN_VERSION}-bin-netinst.tgz -C /usr/local/
+RUN mv /usr/local/zeppelin-${ZEPPELIN_VERSION}-bin-netinst /usr/local/zeppelin
 
 ENV ZEPPELIN_HOME=/usr/local/zeppelin
 COPY config/zeppelin-env.sh $ZEPPELIN_HOME/conf/zeppelin-env.sh
