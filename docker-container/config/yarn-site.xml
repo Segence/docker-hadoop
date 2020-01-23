@@ -41,4 +41,16 @@
         <name>yarn.nodemanager.disk-health-checker.max-disk-utilization-per-disk-percentage</name>
         <value>98.5</value>
     </property>
+    <property>
+        <name>yarn.scheduler.minimum-allocation-mb</name>
+        <value>2048</value>
+    </property>
+    <property>
+        <name>yarn.nodemanager.vmem-pmem-ratio</name>
+        <value>2.1</value>
+	</property>
+    <property>
+        <name>yarn.scheduler.minimum-allocation-vcores</name>
+        <value>2</value>
+    </property>
 </configuration>

@@ -43,3 +43,24 @@ services:
     links:
       - hadoop-namenode
     tty: true
+  hadoop-datanode2:
+    image: segence/hadoop
+    container_name: hadoop-datanode2
+    hostname: hadoop-datanode2
+    ports:
+      - "8043:8043"
+      - "50076:50076"
+    expose:
+      - "34000-48000"
+      - "50010"
+      - "50020"
+      - "50040"
+    environment:
+      - HDFS_REPLICATION_FACTOR=1
+      - HADOOP_NAMENODE_HOST=hadoop-namenode
+    volumes:
+      - ./data-slave2:/data
+      - ./slaves-config:/config:ro
+    links:
+      - hadoop-namenode
+    tty: true
