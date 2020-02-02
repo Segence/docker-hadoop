@@ -43,7 +43,7 @@
     </property>
     <property>
         <name>yarn.scheduler.minimum-allocation-mb</name>
-        <value>2048</value>
+	<value>4096</value>
     </property>
     <property>
         <name>yarn.nodemanager.vmem-pmem-ratio</name>
@@ -51,6 +51,6 @@
 	</property>
     <property>
         <name>yarn.scheduler.minimum-allocation-vcores</name>
-        <value>2</value>
+        <value>4</value>
     </property>
 </configuration>
